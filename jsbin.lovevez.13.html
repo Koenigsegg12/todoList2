@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2017 by Koenigsegg12 (http://jsbin.com/lovevez/13/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Cuprum" rel="stylesheet">  <meta name="description" content="TODO List - Lesson 11 #1">
+  <meta charset="utf-8">
+  <title>To Do List</title>
+<style id="jsbin-css">
+body{
+  background-image: url(https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSBwR0Ivo8hH3B3UTqQd96Hq9cO0ZZq2SGOt8xhTbaVOtRx-ySB);
+  background-size: 250%;
+    font-family: 'Cuprum', sans-serif;
+  opacity: 0.7;
+
+}
+
+button{
+  font-family: 'Cuprum', sans-serif;
+}
+.outer{
+  border: 4px solid #5F4606;
+  width: 450px;
+  margin: auto;
+  padding: 10px;
+  opacity: ;
+}
+
+.time{
+  font-size:5px;
+}
+
+li button {
+  float:right;
+}
+</style>
+</head>
+<body>
+  <div class ="outer">
+    <h1>To Do List</h1>
+    <input id="input" type="text" />
+    <button id="add-button">加入</button>
+    <div>
+      <ul id="task-list" style="list-style: none">
+        <li>
+          <label>
+            <input class="js-task-checkbox" type="checkbox">
+            TEST
+          </label>
+          <button class="js-edit-button">Edit</button>
+          <button class="js-delete-button">Delete</button>
+        </li>
+      </ul>
+      共有<span id="total-task-number">0</span>個事項
+      <button id="delete-completed-button">Delete Selected </button>
+      <hr>
+      <button id="completedTasks">Completed</button>
+      <button id="incompletedTasks">Pending</button>
+      <button id="totalTasks">All</button>
+    </div>
+  </div>
+<script id="jsbin-javascript">
+updateTotalTaskNumber();
+
+function createHTMLString( value ){
+   var date = new Date();
+   var dateString = date.getFullYear()+"/"+date.getMonth()+"/"+date.getDate()+" "+date.getHours()+":"+date.getMinutes();
+   var HTMLStr = "<li><label><input  class='js-task-checkbox' type='checkbox'><span class='js-content'>"+ value +"</span> "+dateString+"</label><button  class='js-edit-button'>編輯</button><button class='js-delete-button'>刪除</button></li>";
+  return HTMLStr;
+}
+// ==== 新增事項 ==== //
+function addTask(){
+  var value = $("#input").val();
+  if(value!==""){
+    
+    var HTMLStr = createHTMLString(value);
+    
+    $("#task-list").append(HTMLStr);
+    $("#input").val("");
+    updateTotalTaskNumber();
+  }
+}
+    
+  
+
+function isEnterPressed(event){
+  if (event.which === 13){
+    addTask();
+  }
+}
+
+// 為“新增按鈕”綁定點擊事件
+$("#add-button").on("click", addTask);
+
+// 為“輸入欄位”綁定點擊事件
+$("#input").on("keypress", isEnterPressed);
+
+
+
+// ==== 刪除單一事項 ==== //
+function deleteTask(){
+  var $target = $(this).closest("li");
+  $target.remove();
+  updateTotalTaskNumber();
+}
+$("body").on("click", ".js-delete-button", deleteTask);
+
+
+// ==== 刪除所有已完成事項 ==== //
+$("#delete-completed-button").on("click", removeCompletedTasks);
+                                 
+function removeCompletedTasks(){
+  $(".js-task-checkbox:checked").closest("li").remove();
+  updateTotalTaskNumber();
+}
+
+
+// ==== 更新所有事項數目 ==== //
+function updateTotalTaskNumber() { // #HW
+  var total = $(".js-task-checkbox").length;
+  $("#total-task-number").text(total);
+}
+
+
+// ==== 篩選器 ==== //
+function showCompletedTasks(){
+  $("li").hide();
+  $(":checked").closest("li")
+    .show();
+}
+function showImcompletedTasks(){
+  $("li").show();
+  $(":checked").closest("li")
+    .hide();
+}
+function showTotalTasks(){
+  $("li").show();
+}
+
+$("#completedTasks").on("click", showCompletedTasks);
+$("#incompletedTasks").on("click", showImcompletedTasks);
+$("#totalTasks").on("click", showTotalTasks);
+
+function editTask(){
+  var $task = $(this).closest("li");
+  var originTaskContent = $task.find(".js-content").text();
+  var newTask = prompt('將 "'+originTaskContent+'" 改成：');
+  $task.find(".js-content").text(newTask);
+}
+
+$("body").on("click", ".js-edit-button", editTask);
+
+</script>
+</body>
+</html>
